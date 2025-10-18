@@ -1,7 +1,6 @@
 from pathlib import Path
 
 
-# Class of ToDo list App
 class ToDoListApp:
     def __init__(self, menu: str, menu_length: int):
         # Go two levels up from main.py → project root
@@ -64,8 +63,6 @@ class ToDoListApp:
                 self.edit_tasks()
                 print(self.menu)
 
-    # add indexes // added
-    # add time feature
     def view_tasks(self):
         if len(self.tasks_list) == 0:
             print("You have no tasks.\n")
@@ -103,13 +100,7 @@ class ToDoListApp:
                 self.tasks_list.append(user_input)
                 prompt = "Add another? ('Q' to quit)\n: "
                 print(f"'{user_input}' has been added to task list\n")
-                continue
 
-    # method to remove tasks from list/file // added
-    # employ use of indexes // added
-    # option to remove all tasks at once // added
-    # add feature that saves the current edited task list to file // added
-    # add time feature
     def remove_tasks(self):
         list_length = len(self.tasks_list)
 
@@ -155,10 +146,7 @@ class ToDoListApp:
             with open(self.tasks_file, "w") as f:
                 for i in self.tasks_list:
                     f.write(f"{i}\n")
-            continue
 
-    # method to update tasks in file
-    # employ use of indexes
     def edit_tasks(self):
         list_length = len(self.tasks_list)
 
