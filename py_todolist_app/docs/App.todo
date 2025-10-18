@@ -25,7 +25,7 @@ What to achieve:
    employ use of indexes // added
    option to remove all tasks at once // added
    add feature that saves the current edited task list to file // added
-   add time feature
+   add time feature // not added
    Method to update tasks in file // added
 
 #TODO: Things to fix
