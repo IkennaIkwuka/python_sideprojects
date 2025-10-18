@@ -21,6 +21,13 @@ What to achieve:
    Method to add tasks to tasks list //added
    Add till a certain limit // added
    Validate for no duplicates (use sets) // added
+   method to remove tasks from list/file // added
+   employ use of indexes // added
+   option to remove all tasks at once // added
+   add feature that saves the current edited task list to file // added
+   add time feature
+   Method to update tasks in file // added
 
 #TODO: Things to fix
+   core methods // fixed
 
