@@ -1,0 +1,58 @@
+DATE FORMAT -- YEAR-MONTH-DAY -- 2302-12-23
+
+
+2025-10-18 - "src/cli" directory
+
+    Added functionality to set a limit when trying to add tasks to file and a limit for file size.
+
+    Implemented functionality to check for duplicates when creating a task.
+
+    Added a method with functionality to remove tasks from file.
+
+    Employed the use of indexes.
+
+    Added a functionality to remove all tasks at once.
+
+    Added functionality that saves the current edited task list to file.
+
+    Added a method to edit tasks in file.
+
+    Fixed incorrect imports.
+
+    Resolved path to file issues.
+
+    Renamed and changed the functionality of the constructor parameters of the class "ToDoListApp".
+
+    Renamed module "ToDoListApp" to "py_todolist_app".
+
+    Removed methods "load_tasks()", "save_tasks()", "display_tasks()" as well as their functionality as they proved redundant.
+
+    Added "display_menu()", "view_tasks()" methods and streamlined functionality. 
+
+    Renamed method "update_tasks()" to "edit_tasks()" and improved functionality.
+
+    Restructured order of methods for improved user experience.
+
+    Improved functionality of the core methods streamlining them to reduce cognitive complexity.
+
+    
+2024-12-16 - "src/cli" directory
+
+    Created package of app operations.
+    
+    Removed classes from "crud_operations" and "utility_operations".
+    
+    Refactored "create_tasks()" function to reduce complexity.
+    
+    Implemented save tasks functionality in "create_tasks()" function.
+    
+    Created "ask_to_save()" and "ask_task_amount()" function in "utility_operations" module to reduce cognitive complexity of "create_tasks()" function in "crud_operations" module.
+
+    Refactored "task_list" to be a global variable to be accessed by other functions in "crud_operations" module.
+
+
+2024-12-15 - "src/cli" directory
+
+    Added classes to implement Object Oriented Programming (OOP).
+
+    Created modules for "CRUD operations" and "utility operations".
