@@ -1,16 +1,168 @@
-import os
-
-os.makedirs("docs", exist_ok=True)
-# Steps
+from pathlib import Path
 
 
 # class of todolistapp
 class ToDoListApp:
-    def __init__(self, file_name, max_file_length: int) -> None:
+    def __init__(self, file_name, max_file_length: int):
+        # Go two levels up from main.py → project root
+        self.tasks_file = (
+            Path(__file__).resolve().parents[2] / "docs" / "Tasks_file.txt"
+        )
+
+        # Ensure file and directory exist
+        self.tasks_file.parent.mkdir(parents=True, exist_ok=True)
+        self.tasks_file.touch(exist_ok=True)
+
+        self.max_file_size = 10
+
+        with open(self.tasks_file, "r") as f:
+            self.tasks_list = []
+            for line in f.readlines():
+                self.tasks_list.append(line.strip())
+
+        self.menu = """
+        \rToDoList App
+            1. View Tasks
+            2. Add Tasks
+            3. Remove Tasks
+            4. Edit Tasks\n
+        """
+        self.number_of_options = 4
+
         self.max = max_file_length
         self.file_name = file_name
-        self.tasks_list = []
-        self.load_tasks()
+
+    def display_menu(self):
+        print(self.menu)
+        while True:
+            prompt = "What do you want to do? 'Q' to Quit\n: "
+            user_input = input(prompt).strip().upper()
+
+            if user_input != "Q" and not user_input.isdigit():
+                print(
+                    f"{user_input} is invalid. Please give a valid option or 'Q' to quit"
+                )
+                continue
+
+            if user_input == "Q":
+                print("Closing Todo List App, goodbye!...")
+                return
+
+            user_input = int(user_input)
+
+            if user_input not in range(self.number_of_options + 1):
+                print(
+                    f"{user_input} is invalid. Please choose a valid option (1 ~ {self.number_of_options}) or 'Q' to quit"
+                )
+                continue
+
+            if user_input == 1:
+                self.view_tasks()
+                print(self.menu)
+
+            elif user_input == 2:
+                self.add_tasks()
+                print(self.menu)
+
+            elif user_input == 3:
+                self.remove_tasks()
+                print(self.menu)
+
+            elif user_input == 4:
+                self.edit_tasks()
+
+    def view_tasks(self):
+        if len(self.tasks_list) == 0:
+            print("You have no tasks.")
+            return
+
+        with open(self.tasks_file, "r") as f:
+            print("Viewing tasks list...\n")
+
+            view = f.readlines()
+            for i in view:
+                print(f"{i.strip()}\n")
+
+            print("\nEnd of task list returning to menu...\n")
+
+    def add_tasks(self):
+        if len(self.tasks_list) > self.max_file_size:
+            print("Tasks file is full.")
+            return
+
+        prompt = "Provide a task you would like to add ('Q' to quit)\n: "
+        while True:
+            user_input = input(prompt).strip()
+
+            if user_input == "Q" or user_input == "q":
+                print("Returning to menu...")
+                return
+
+            if user_input in self.tasks_list:
+                print(f"Task: '{user_input}' already exists.")
+                continue
+
+            with open(self.tasks_file, "a") as f:
+                f.write(user_input + "\n")
+                self.tasks_list.append(user_input)
+                prompt = "Add another? ('Q' to quit)\n: "
+                print(f"'{user_input}' has been added to task list")
+                continue
+
+    # method to remove tasks from list/file
+    # employ use of indexes
+    def remove_tasks(self):
+        if not self.tasks_list:
+            print("Cannot remove task as there are no tasks.")
+            return
+
+        prompt = "Give the 'id' of the task you would like to remove('0' to quit)"
+        while True:
+            try:
+                idx = int(input(prompt).strip()) - 1
+                if idx == -1:
+                    return
+
+                if idx in range(len(self.tasks_list)):
+                    print(
+                        f"\n'{self.tasks_list[idx]}' has been removed at index {idx + 1}."
+                    )
+                    self.tasks_list.pop(idx)
+                    self.save_tasks()
+                    return
+                else:
+                    print(f"Id must be between 1 ~ {len(self.tasks_list)} ")
+            except ValueError:
+                print("Please input a number")
+
+    # method to update tasks in file
+    # employ use of indexes
+    def edit_tasks(self):
+        if not self.tasks_list:
+            print("Cannot update task as there are no tasks.")
+            return
+
+        id_prompt = "Give the 'id' of the task you would like to update('0' to quit): "
+        task_prompt = "Provide the updated task(q to quit): "
+        while True:
+            try:
+                idx = int(input(id_prompt).strip()) - 1
+                if idx == -1:
+                    return
+
+                if idx in range(len(self.tasks_list)):
+                    task = input(task_prompt).strip()
+                    self.tasks_list.insert(idx, task)
+                    print(
+                        f"\n'{self.tasks_list[idx]}' has been updated at index {idx + 1}."
+                    )
+                    self.tasks_list.pop(idx + 1)
+                    self.save_tasks()
+                    return
+                else:
+                    print(f"Id must be between 1 ~ {len(self.tasks_list)} ")
+            except ValueError:
+                print("Please input a number")
 
     # method to read file for tasks
     # append to list or set?
@@ -40,110 +192,14 @@ class ToDoListApp:
                 print(f"Id: {idx} Task: {task}")
             print("")
 
-    # method to add tasks to tasks list
-    # add till a certain limit
-    # validate for no duplicates (use sets)
-    def add_tasks(self):
-        if len(self.tasks_list) > self.max:
-            print("Task list is full.")
-            return
-
-        prompt = "Provide a task you would like to add (q to quit): "
-        task = input(prompt).strip()
-        if task.lower() == "q":
-            return
-
-        if task in self.tasks_list:
-            print(f"Task: {task} already exists.")
-        else:
-            self.tasks_list.append(task)
-            self.save_tasks()
-            print(f"'{task}' has been created successfully")
-
-    # method to remove tasks from list/file
-    # employ use of indexes
-    def remove_task(self):
-        if not self.tasks_list:
-            print("Cannot remove task as there are no tasks.")
-            return
-
-        prompt = "Give the 'id' of the task you would like to remove('0' to quit)"
-        while True:
-            try:
-                idx = int(input(prompt).strip()) - 1
-                if idx == -1:
-                    return
-
-                if idx in range(len(self.tasks_list)):
-                    print(
-                        f"\n'{self.tasks_list[idx]}' has been removed at index {idx + 1}."
-                    )
-                    self.tasks_list.pop(idx)
-                    self.save_tasks()
-                    return
-                else:
-                    print(f"Id must be between 1 ~ {len(self.tasks_list)} ")
-            except ValueError:
-                print("Please input a number")
-
-    # method to update tasks in file
-    # employ use of indexes
-    def update_tasks(self):
-        if not self.tasks_list:
-            print("Cannot update task as there are no tasks.")
-            return
-
-        id_prompt = "Give the 'id' of the task you would like to update('0' to quit): "
-        task_prompt = "Provide the updated task(q to quit): "
-        while True:
-            try:
-                idx = int(input(id_prompt).strip()) - 1
-                if idx == -1:
-                    return
-
-                if idx in range(len(self.tasks_list)):
-                    task = input(task_prompt).strip()
-                    self.tasks_list.insert(idx, task)
-                    print(
-                        f"\n'{self.tasks_list[idx]}' has been updated at index {idx + 1}."
-                    )
-                    self.tasks_list.pop(idx + 1)
-                    self.save_tasks()
-                    return
-                else:
-                    print(f"Id must be between 1 ~ {len(self.tasks_list)} ")
-            except ValueError:
-                print("Please input a number")
-
 
 # main method to run program
 # display index, tasks .. in tasks list
 def main():
-    print("\nToDoList App")
-    print("1. Add Tasks")
-    print("2. Remove Tasks")
-    print("3. Edit Tasks")
-    print("4. Quit")
-
-    file_name = "docs/Tasks.txt" 
+    file_name = "docs/Tasks.txt"
     app = ToDoListApp(file_name, 10)
 
-    while True:
-        app.display_tasks()
-
-        user_input = input("What do you want to do? (add, remove, update, quit): ")
-        print("")
-        if user_input == "add":
-            app.add_tasks()
-        elif user_input == "remove":
-            app.remove_task()
-        elif user_input == "update":
-            app.update_tasks()
-        elif user_input == "quit":
-            print("Closing program, goodbye!")
-            break
-        else:
-            print(f"'{user_input}' is an invalid input")
+    app.display_menu()
 
 
 if __name__ == "__main__":

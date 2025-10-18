@@ -16,3 +16,11 @@ What to achieve:
 8. Additional functionality:
    mark tasks as completed (TO-DO)
    Add functionality to see date/time of task creation.
+
+#TODO: Things to Add
+   Method to add tasks to tasks list //added
+   Add till a certain limit // added
+   Validate for no duplicates (use sets) // added
+
+#TODO: Things to fix
+
