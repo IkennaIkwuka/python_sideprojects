@@ -1,0 +1,8 @@
+DATE FORMAT -- YEAR-MONTH-DAY -- 2302-12-23
+
+
+2025-09-18 - "cli" directory
+    Added "Ewo" difficulty
+    Streamlined "game_logic()" method's functionality
+    Removed unnecessary/redundant methods
+    Renamed module to "py_number_guessing_game"
