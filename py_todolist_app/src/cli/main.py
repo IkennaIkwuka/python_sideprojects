@@ -33,6 +33,7 @@ class ToDoListApp:
         self.file_name = file_name
 
     def display_menu(self):
+        menu_range = self.number_of_options
         print(self.menu)
         while True:
             prompt = "What do you want to do? 'Q' to Quit\n: "
@@ -50,9 +51,9 @@ class ToDoListApp:
 
             user_input = int(user_input)
 
-            if user_input not in range(self.number_of_options + 1):
+            if user_input not in range(menu_range + 1):
                 print(
-                    f"{user_input} is invalid. Please choose a valid option (1 ~ {self.number_of_options}) or 'Q' to quit"
+                    f"{user_input} is invalid. Please choose a valid option (1 ~ {menu_range}) or 'Q' to quit"
                 )
                 continue
 
@@ -71,6 +72,8 @@ class ToDoListApp:
             elif user_input == 4:
                 self.edit_tasks()
 
+    # add indexes // added
+    # add time feature
     def view_tasks(self):
         if len(self.tasks_list) == 0:
             print("You have no tasks.")
@@ -80,8 +83,8 @@ class ToDoListApp:
             print("Viewing tasks list...\n")
 
             view = f.readlines()
-            for i in view:
-                print(f"{i.strip()}\n")
+            for n, i in enumerate(view, start=1):
+                print(f"{n}. {i.strip()}\n")
 
             print("\nEnd of task list returning to menu...\n")
 
@@ -91,6 +94,7 @@ class ToDoListApp:
             return
 
         prompt = "Provide a task you would like to add ('Q' to quit)\n: "
+
         while True:
             user_input = input(prompt).strip()
 
@@ -109,31 +113,60 @@ class ToDoListApp:
                 print(f"'{user_input}' has been added to task list")
                 continue
 
-    # method to remove tasks from list/file
-    # employ use of indexes
+    # method to remove tasks from list/file // added
+    # employ use of indexes // added
+    # option to remove all tasks at once // added
+    # add feature that saves the current edited task list to file // added
+    # add time feature
     def remove_tasks(self):
-        if not self.tasks_list:
+        list_length = len(self.tasks_list)
+
+        if list_length == 0:
             print("Cannot remove task as there are no tasks.")
             return
 
-        prompt = "Give the 'id' of the task you would like to remove('0' to quit)"
-        while True:
-            try:
-                idx = int(input(prompt).strip()) - 1
-                if idx == -1:
-                    return
+        prompt = "Give the index of the task you would like to remove ('0' to remove all tasks, 'Q' to quit)\n: "
 
-                if idx in range(len(self.tasks_list)):
-                    print(
-                        f"\n'{self.tasks_list[idx]}' has been removed at index {idx + 1}."
-                    )
-                    self.tasks_list.pop(idx)
-                    self.save_tasks()
-                    return
-                else:
-                    print(f"Id must be between 1 ~ {len(self.tasks_list)} ")
-            except ValueError:
-                print("Please input a number")
+        while True:
+            user_input = input(prompt).strip()
+
+            if user_input == "Q" or user_input == "q":
+                print("Returning to menu...")
+                return
+
+            if (user_input != "Q" or user_input != "q") and not user_input.isdigit():
+                print(
+                    f"{user_input} is invalid. Please give a valid index ('0' to remove all tasks, 'Q' to quit)"
+                )
+                continue
+
+            user_input = int(user_input)
+
+            if user_input == 0:
+                self.tasks_list.clear()
+                print("Clearing all tasks...\n")
+                print("All tasks have been cleared. Returning to menu...")
+                return
+
+            if user_input - 1 not in range(list_length):
+                print(
+                    f"{user_input} is invalid. Please give a valid index 1 ~ {list_length} ('0' to remove all tasks, 'Q' to quit)"
+                )
+                continue
+
+            else:
+                print(
+                    f"{user_input}. {self.tasks_list[user_input - 1]} has been removed"
+                )
+
+                self.tasks_list.pop(user_input - 1)
+
+                prompt = "Remove more? ('0' to remove all tasks, 'Q' to quit)\n: "
+
+                with open(self.tasks_file, "w") as f:
+                    for i in self.tasks_list:
+                        f.write(f"{i}\n")
+                continue
 
     # method to update tasks in file
     # employ use of indexes
