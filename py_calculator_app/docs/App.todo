@@ -1,0 +1,26 @@
+full python basic calculator app in cli project
+
+#requirements
+
+1. able to take user input - limited to numbers and symbols
+
+1.1 Valid symbols :-
++ -- Addition,
+- -- Subtraction,
+* -- Multiplication,
+/ -- Division,
+% -- Modulus,
+^ -- Exponentiation
+
+
+2. able to freely input all valid inputs in one sitting and display result.
+
+2.1 Bonus ablity to show processes
+
+2.2 calculation so follow math rules
+
+
+
+3. Add a timer/delay feature that sets a time user has to give input
+
+3.1 Bonus add progress bar gui in terminal.
