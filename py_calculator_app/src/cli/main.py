@@ -9,7 +9,7 @@ class calc_app:
     def __init__(self) -> None:
         prompt = "What do you want to calculate\n:  "
         user_input = input(prompt)
-        self.validate_input(user_input)
+        print(self.validate_input(user_input))
 
     # def get_user_input(self):
     #     prompt = "What do you want to calculate\n:  "
@@ -19,58 +19,39 @@ class calc_app:
 
     def validate_input(self, input: str):
         input = input.strip()
-
+        values = input.split()
         operands = []
         operators = []
 
-        for _ in input.split():
-            if not _.isdigit() and _ not in self.SYMBOLS:
-                raise ValueError(f"This is invalid. '{_}'")
+        for i, val in enumerate(values):
+            # checks validity of input
+            if not val.isdigit() and val not in self.SYMBOLS:
+                raise ValueError(
+                    f"Input: {values}\n\tError: This is an invalid input. '{val}'"
+                )
 
-        for _ in self.SYMBOLS:
-            if _ in input:
-                operators.append(_)
+            # checks whether last inputted value is not a number or not
+            if not values[-1].isdigit():
+                raise ValueError(
+                    f"Input: {values}\n\tError: You cannot end with '{values[-1]}'"
+                )
 
-        for _ in input.split():
-            if _.isdigit():
-                operands.append(_)
+            # checks the order of values inputted
+            # By order of operand | operator | operand | operator | etc
+            if i % 2 == 0 and not val.isdigit():
+                raise ValueError(
+                    f"Input: {values}\n\tError: Value number {i}. {values[i]} is invalid and must follow the order of 'operand | operator | operand | operator | etc'"
+                )
+            elif i % 2 != 0 and val not in self.SYMBOLS:
+                raise ValueError(
+                    f"Input: {values}\n\tError: Value number {i}. {values[i]} is invalid and must follow the order of 'operand | operator | operand | operator | etc'"
+                )
 
-        print(operands)
-        print(operators)
-        #     if self.SYMBOLS not in input.split():
-        #         print("Yes")
-        #     else:
-        #         print("No")
-        # # print(input.split())
-        # print(len(input.split()))
-
-        # for _ in (input):
-        #     print(f"{_}")
-
-        # if input.isdecimal():
-        #     print("decimal")
-        # if input.isnumeric():
-        #     print("numeric")
-        # if input.isdigit():
-        #     print("digit")
-        # if input.isalnum():
-        #     print("alphanum")
-        # if input.isalpha():
-        #     print("alpha")
-
-        # try:
-        #     symbol_list = []
-
-        #     for _ in self.SYMBOLS:
-        #         if _ in input:
-        #             symbol_list.append(_)
-
-        #     print(symbol_list)
-        #     # if input.isdigit():
-        #     #     pass
-        # except:
-        #     print(f"{_} isn't a valid operator")
-        # pass
+            if i % 2 == 0:
+                operands.append(val)
+            if i % 2 != 0:
+                operators.append(val)
+        return operands, operators
 
     # Addition method
     def add(self):
