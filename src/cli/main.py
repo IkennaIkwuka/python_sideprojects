@@ -9,15 +9,17 @@ class calc_app:
     def __init__(self) -> None:
         prompt = "What do you want to calculate\n:  "
         user_input = input(prompt)
-        # print(self.validate_input(user_input))
-        operands, operators, input_length = self.validate_input(user_input)
-        # self.eval_input(input_length)
-        for i, k in operands, operators:
-            print(f"i.{i}")
-            print(f"k.{k}")
-            pass
 
-    def eval_input(self, obj_length):
+        # print(self.validate_input(user_input))
+        operands, operators, values = self.validate_input(user_input)
+        self.eval_input(values)
+
+    def eval_input(self, values):
+        eval_object = ""
+
+        for i in values:
+            if i % 2 == 0:
+                eval_object.join()
         test_list = []
         for evens in range(0, obj_length, 2):
             for odds in range(1, obj_length, 2):
@@ -58,7 +60,7 @@ class calc_app:
             if i % 2 != 0:
                 operators.append(val)
 
-        return operands, operators, len(values)
+        return operands, operators, values
 
     # Addition method
     def add(self):
