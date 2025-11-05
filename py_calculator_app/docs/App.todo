@@ -12,6 +12,8 @@ full python basic calculator app in cli project
 % -- Modulus,
 ^ -- Exponentiation
 
+1.2 validate user input with systems requirements // added
+
 
 2. able to freely input all valid inputs in one sitting and display result.
 
