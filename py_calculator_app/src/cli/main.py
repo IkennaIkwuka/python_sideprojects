@@ -11,19 +11,21 @@ class calc_app:
         user_input = input(prompt)
 
         # print(self.validate_input(user_input))
-        operands, operators, values = self.validate_input(user_input)
-        self.eval_input(values)
+        operands, operators = self.validate_input(user_input)
+        self.eval_input(operands, operators)
 
-    def eval_input(self, values):
+    def eval_input(self, operands: list[str], operators: list[str]):
         eval_object = ""
 
-        for i in values:
-            if i % 2 == 0:
-                eval_object.join()
-        test_list = []
-        for evens in range(0, obj_length, 2):
-            for odds in range(1, obj_length, 2):
-                pass
+        for ops, opt in zip(operands, operators):
+            eval_object += ops + " " + opt + " "
+
+        eval_object += operands[-1]
+
+        # convert ^ to ** for python exponent
+        eval_object = eval_object.replace("^", "**")
+
+        print(eval_object + f" = {eval(eval_object)}")
 
     def validate_input(self, user_input: str):
         user_input = user_input.strip()
@@ -60,7 +62,7 @@ class calc_app:
             if i % 2 != 0:
                 operators.append(val)
 
-        return operands, operators, values
+        return operands, operators
 
     # Addition method
     def add(self):
