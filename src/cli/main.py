@@ -1,6 +1,10 @@
-# Full Calculator App Project
+# Full Basic Calculator App Project
+
 
 # Libs
+
+# Decimal (with increased precision) or staying in exact integer/rational arithmetic avoid float overflow.
+from decimal import Decimal
 
 
 class calc_app:
@@ -8,24 +12,75 @@ class calc_app:
 
     def __init__(self) -> None:
         prompt = "What do you want to calculate\n:  "
+
         user_input = input(prompt)
 
-        # print(self.validate_input(user_input))
         operands, operators = self.validate_input(user_input)
-        self.eval_input(operands, operators)
+
+        eval_expr = self.eval_input(operands, operators)
+
+        try:
+            eval_result = eval(eval_expr)
+
+            print(eval_expr + f" = {eval_result}")
+
+        except OverflowError:
+            eval_expr_split = self.fix_input(eval_expr)
+
+            eval_expr_new = ""
+
+            for i in eval_expr_split:
+                eval_expr_new += f"{i} "
+
+            eval_result = eval(eval_expr_new)
+
+            print(f"\n{eval_expr} = {eval_result}")
+
+    def fix_input(self, eval_expr: str):
+        print("\nYour expression ran into an overflow error.")
+        print("\nThis can be due to:")
+        print("  - Huge exponent")
+        print("  - Combined with true division '/'")
+
+        print("\nThe program will now 'fix' your expression.")
+        print("\n...Wrapping operands in 'Decimal()' function")
+        print("...Adding parentheses to exponentiation and division expressions")
+
+        eval_expr = eval_expr.strip()
+        eval_expr_split = eval_expr.split()
+
+        for i, _ in enumerate(eval_expr_split):
+            if i % 2 == 0:
+                # adds Decimal() wrap to operands to avoid overflow error
+                eval_expr = eval_expr.replace(_, f"Decimal({_})")
+
+        eval_expr_split = eval_expr.split()
+
+        # adds parentheses to division and exponentiation sub-expressions to resolve overflow error
+        if "**" in eval_expr_split:
+            idx = eval_expr_split.index("**")
+            eval_expr_split.insert(idx - 1, "(")
+            eval_expr_split.insert(idx + 3, ")")
+
+        if "/" in eval_expr_split:
+            idx = eval_expr_split.index("/")
+            eval_expr_split.insert(idx - 1, "(")
+            eval_expr_split.insert(idx + 3, ")")
+
+        return eval_expr_split
 
     def eval_input(self, operands: list[str], operators: list[str]):
-        eval_object = ""
+        eval_expr = ""
 
         for ops, opt in zip(operands, operators):
-            eval_object += ops + " " + opt + " "
+            eval_expr += ops + " " + opt + " "
 
-        eval_object += operands[-1]
+        eval_expr += f"{operands[-1]}"
 
-        # convert ^ to ** for python exponent
-        eval_object = eval_object.replace("^", "**")
+        # converts "^" to "**" for eval() to work with "^" in python
+        eval_expr = eval_expr.replace("^", "**")
 
-        print(eval_object + f" = {eval(eval_object)}")
+        return eval_expr
 
     def validate_input(self, user_input: str):
         user_input = user_input.strip()
@@ -59,7 +114,7 @@ class calc_app:
 
             if i % 2 == 0:
                 operands.append(val)
-            if i % 2 != 0:
+            else:
                 operators.append(val)
 
         return operands, operators
