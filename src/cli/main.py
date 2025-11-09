@@ -2,15 +2,17 @@
 
 
 # Libs
-
-# Decimal (with increased precision) or staying in exact integer/rational arithmetic avoid float overflow.
 from decimal import Decimal
+import time_utils as tUtils
 
 
 class calc_app:
     SYMBOLS = ("+", "-", "*", "/", "^", "%")
 
     def __init__(self) -> None:
+        print("App Starts...\n")
+        print("Welcome to the Basic Calculator Terminal App\n")
+
         prompt = "What do you want to calculate\n:  "
 
         user_input = input(prompt)
@@ -37,14 +39,25 @@ class calc_app:
             print(f"\n{eval_expr} = {eval_result}")
 
     def fix_input(self, eval_expr: str):
-        print("\nYour expression ran into an overflow error.")
-        print("\nThis can be due to:")
-        print("  - Huge exponent")
-        print("  - Combined with true division '/'")
+        tUtils.typewriter("\nYour expression ran into an overflow error.")
+        tUtils.typewriter("\nThis can be due to:")
+        tUtils.typewriter("  - Huge exponent")
+        tUtils.typewriter("  - Combined with true division '/'")
 
-        print("\nThe program will now 'fix' your expression.")
-        print("\n...Wrapping operands in 'Decimal()' function")
-        print("...Adding parentheses to exponentiation and division expressions")
+        tUtils.typewriter("\nThe program will now 'fix' your expression.")
+        tUtils.typewriter("\n...Wrapping operands in 'Decimal()' function", 0.1)
+
+        tUtils.sleep(2)
+
+        print("\nsuccess")
+
+        tUtils.typewriter(
+            "\n...Adding parentheses to exponentiation and division expressions", 0.1
+        )
+
+        tUtils.sleep(2)
+
+        print("\nsuccess")
 
         eval_expr = eval_expr.strip()
         eval_expr_split = eval_expr.split()
@@ -144,11 +157,5 @@ class calc_app:
         pass
 
 
-def main():
-    print("App Starts...\n")
-    print("Welcome to the Basic Calculator Terminal App\n")
-    calc_app()
-
-
 if __name__ == "__main__":
-    main()
+    calc_app()
