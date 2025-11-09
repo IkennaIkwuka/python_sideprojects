@@ -1,30 +1,32 @@
 from pathlib import Path
 
+# Go two levels up from main.py → project root
+tskFile = Path(__file__).resolve().parents[2] / "docs" / "Tasks_file.txt"
+
+# Ensure file and directory exist
+tskFile.parent.mkdir(parents=True, exist_ok=True)
+tskFile.touch(exist_ok=True)
+
 
 class ToDoListApp:
-    def __init__(self, menu: str, menu_length: int):
-        # Go two levels up from main.py → project root
-        self.tasks_file = (
-            Path(__file__).resolve().parents[2] / "docs" / "Tasks_file.txt"
-        )
-
-        # Ensure file and directory exist
-        self.tasks_file.parent.mkdir(parents=True, exist_ok=True)
-        self.tasks_file.touch(exist_ok=True)
-
-        self.max_file_size = 10
-
-        with open(self.tasks_file, "r") as f:
-            self.tasks_list = []
-            for line in f.readlines():
-                self.tasks_list.append(line.strip())
-
+    def __init__(self, menu: str, menu_length: int, max_file_size):
+        self.tasks_file = tskFile
+        self.max_file_size = max_file_size
         self.menu = menu
         self.menu_length = menu_length
 
+        self.tasks_list = []
+        with open(self.tasks_file, "r") as f:
+            for _ in f.readlines():
+                self.tasks_list.append(_.strip())
+
+        self.display_menu()
+
     def display_menu(self):
         menu_range = self.menu_length
+
         print(self.menu)
+
         while True:
             prompt = "What do you want to do? ('Q' to Quit)...\n: "
             user_input = input(prompt).strip().upper()
@@ -47,20 +49,15 @@ class ToDoListApp:
                 )
                 continue
 
-            if index == 1:
-                self.view_tasks()
-                print(self.menu)
+            methods = [
+                self.view_tasks,
+                self.add_tasks,
+                self.remove_tasks,
+                self.edit_tasks,
+            ]
 
-            elif index == 2:
-                self.add_tasks()
-                print(self.menu)
-
-            elif index == 3:
-                self.remove_tasks()
-                print(self.menu)
-
-            elif index == 4:
-                self.edit_tasks()
+            if index in range(1, len(methods) + 1):
+                methods[index - 1]()  # calls the selected method
                 print(self.menu)
 
     def view_tasks(self):
@@ -72,8 +69,8 @@ class ToDoListApp:
             print("Viewing tasks list...\n")
 
             view = f.readlines()
-            for n, i in enumerate(view, start=1):
-                print(f"{n}. {i.strip()}\n")
+            for idx, val in enumerate(view, start=1):
+                print(f"{idx}. {val.strip()}\n")
 
             print("\nEnd of task list returning to menu...\n")
 
@@ -198,7 +195,7 @@ class ToDoListApp:
 
 
 # main method to run program
-def main():
+def run():
     menu = """
         \rToDoList App
         1. View Tasks
@@ -208,9 +205,8 @@ def main():
 
     menu_length = 4
 
-    app = ToDoListApp(menu=menu, menu_length=menu_length)
-    app.display_menu()
+    ToDoListApp(menu, menu_length, 10)
 
 
 if __name__ == "__main__":
-    main()
+    run()
