@@ -38,14 +38,9 @@ class calc_app:
         typewriteEffect("  - Huge exponent")
         typewriteEffect("  - Combined with true division '/'")
         typewriteEffect("\nThe program will now 'fix' your expression.")
+
         typewriteEffect("\n...Wrapping operands in 'Decimal()' function", 0.01)
         time.sleep(2)
-        print("\nsuccess")
-        typewriteEffect(
-            "\n...Adding parentheses to exponentiation and division expressions", 0.01
-        )
-        time.sleep(2)
-        print("\nsuccess")
 
         eval_expr = eval_expr.strip()
 
@@ -53,6 +48,13 @@ class calc_app:
             if i % 2 == 0:
                 # adds Decimal() wrap to operands to avoid overflow error
                 eval_expr = eval_expr.replace(_, f"Decimal({_})")
+
+        print("\nSuccessful")
+
+        typewriteEffect(
+            "\n...Adding parentheses to exponentiation and division expressions", 0.01
+        )
+        time.sleep(2)
 
         eval_expr_split = eval_expr.split()
 
@@ -67,6 +69,8 @@ class calc_app:
             eval_expr_split.insert(idx - 1, "(")
             eval_expr_split.insert(idx + 3, ")")
 
+        print("\nSuccessful")
+
         eval_expr_new = ""
 
         for i in eval_expr_split:
@@ -74,7 +78,7 @@ class calc_app:
 
         eval_result = eval(eval_expr_new)
 
-        print(f"\n{eval_expr} = {eval_result}")
+        typewriteEffect(f"\n{eval_expr} = {eval_result}", 0.05)
 
     def eval_input(self, operands: list[str], operators: list[str]):
         eval_expr = ""
@@ -90,7 +94,7 @@ class calc_app:
         try:
             eval_result = eval(eval_expr)
 
-            print(f"\n{eval_expr} = {eval_result}")
+            typewriteEffect(f"\n{eval_expr} = {eval_result}", 0.05)
 
         except OverflowError:
             return eval_expr
