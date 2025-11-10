@@ -1,17 +1,25 @@
 # Full Basic Calculator App Project
 
-
 # Libs
+import sys
+import time
 from decimal import Decimal
-import time_utils as tUtils
+
+
+def typewriteEffect(text: str, delay=0.005):
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(delay)
+    print()
 
 
 class calc_app:
     SYMBOLS = ("+", "-", "*", "/", "^", "%")
 
     def __init__(self) -> None:
-        print("App Starts...\n")
-        print("Welcome to the Basic Calculator Terminal App\n")
+        typewriteEffect("App Starts...\n")
+        typewriteEffect("Welcome to the Basic Calculator Terminal App\n")
 
         prompt = "What do you want to calculate\n:  "
 
@@ -19,50 +27,29 @@ class calc_app:
 
         operands, operators = self.validate_input(user_input)
 
-        eval_expr = self.eval_input(operands, operators)
+        eval_expr: str | None = self.eval_input(operands, operators)
 
-        try:
-            eval_result = eval(eval_expr)
-
-            print(eval_expr + f" = {eval_result}")
-
-        except OverflowError:
-            eval_expr_split = self.fix_input(eval_expr)
-
-            eval_expr_new = ""
-
-            for i in eval_expr_split:
-                eval_expr_new += f"{i} "
-
-            eval_result = eval(eval_expr_new)
-
-            print(f"\n{eval_expr} = {eval_result}")
+        if isinstance(eval_expr, str):
+            self.fix_input(eval_expr)
 
     def fix_input(self, eval_expr: str):
-        tUtils.typewriter("\nYour expression ran into an overflow error.")
-        tUtils.typewriter("\nThis can be due to:")
-        tUtils.typewriter("  - Huge exponent")
-        tUtils.typewriter("  - Combined with true division '/'")
-
-        tUtils.typewriter("\nThe program will now 'fix' your expression.")
-        tUtils.typewriter("\n...Wrapping operands in 'Decimal()' function", 0.1)
-
-        tUtils.sleep(2)
-
+        typewriteEffect("\nYour expression ran into an overflow error.")
+        typewriteEffect("\nThis can be due to:")
+        typewriteEffect("  - Huge exponent")
+        typewriteEffect("  - Combined with true division '/'")
+        typewriteEffect("\nThe program will now 'fix' your expression.")
+        typewriteEffect("\n...Wrapping operands in 'Decimal()' function", 0.01)
+        time.sleep(2)
         print("\nsuccess")
-
-        tUtils.typewriter(
-            "\n...Adding parentheses to exponentiation and division expressions", 0.1
+        typewriteEffect(
+            "\n...Adding parentheses to exponentiation and division expressions", 0.01
         )
-
-        tUtils.sleep(2)
-
+        time.sleep(2)
         print("\nsuccess")
 
         eval_expr = eval_expr.strip()
-        eval_expr_split = eval_expr.split()
 
-        for i, _ in enumerate(eval_expr_split):
+        for i, _ in enumerate(eval_expr.split()):
             if i % 2 == 0:
                 # adds Decimal() wrap to operands to avoid overflow error
                 eval_expr = eval_expr.replace(_, f"Decimal({_})")
@@ -80,7 +67,14 @@ class calc_app:
             eval_expr_split.insert(idx - 1, "(")
             eval_expr_split.insert(idx + 3, ")")
 
-        return eval_expr_split
+        eval_expr_new = ""
+
+        for i in eval_expr_split:
+            eval_expr_new += f"{i} "
+
+        eval_result = eval(eval_expr_new)
+
+        print(f"\n{eval_expr} = {eval_result}")
 
     def eval_input(self, operands: list[str], operators: list[str]):
         eval_expr = ""
@@ -93,7 +87,13 @@ class calc_app:
         # converts "^" to "**" for eval() to work with "^" in python
         eval_expr = eval_expr.replace("^", "**")
 
-        return eval_expr
+        try:
+            eval_result = eval(eval_expr)
+
+            print(f"\n{eval_expr} = {eval_result}")
+
+        except OverflowError:
+            return eval_expr
 
     def validate_input(self, user_input: str):
         user_input = user_input.strip()
