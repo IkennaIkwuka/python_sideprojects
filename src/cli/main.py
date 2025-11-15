@@ -27,12 +27,15 @@ class calc_app:
 
         operands, operators = self.validate_str(user_input)
 
-        eval_expr: str | None = self.eval_str(operands, operators)
+        eval_expr: str = self.eval_str(operands, operators)
 
-        if isinstance(eval_expr, str):
-            self.fix_input(eval_expr)
+        try:
+            eval_result = eval(eval_expr)
+            typewriteEffect(f"\n{eval_expr} = {eval_result}", 0.05)
+        except OverflowError:
+            self.fix_str(eval_expr)
 
-    def fix_input(self, eval_expr: str):
+    def fix_str(self, eval_expr: str):
         typewriteEffect("\nYour expression ran into an overflow error.")
         typewriteEffect("\nThis can be due to:")
         typewriteEffect("  - Huge exponent")
@@ -91,13 +94,7 @@ class calc_app:
         # converts "^" to "**" for eval() to work with "^" in python
         eval_expr = eval_expr.replace("^", "**")
 
-        try:
-            eval_result = eval(eval_expr)
-
-            typewriteEffect(f"\n{eval_expr} = {eval_result}", 0.05)
-
-        except OverflowError:
-            return eval_expr
+        return eval_expr
 
     def check_str(self, val: str, format: str = ""):
         if val.isdigit():
