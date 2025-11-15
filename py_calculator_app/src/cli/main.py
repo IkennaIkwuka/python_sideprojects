@@ -3,7 +3,7 @@
 # Libs
 import sys
 import time
-from decimal import Decimal
+from decimal import Decimal  # noqa: F401
 
 
 def typewriteEffect(text: str, delay=0.005):
@@ -25,9 +25,9 @@ class calc_app:
 
         user_input = input(prompt)
 
-        operands, operators = self.validate_input(user_input)
+        operands, operators = self.validate_str(user_input)
 
-        eval_expr: str | None = self.eval_input(operands, operators)
+        eval_expr: str | None = self.eval_str(operands, operators)
 
         if isinstance(eval_expr, str):
             self.fix_input(eval_expr)
@@ -80,7 +80,7 @@ class calc_app:
 
         typewriteEffect(f"\n{eval_expr} = {eval_result}", 0.05)
 
-    def eval_input(self, operands: list[str], operators: list[str]):
+    def eval_str(self, operands: list[str], operators: list[str]):
         eval_expr = ""
 
         for ops, opt in zip(operands, operators):
@@ -99,66 +99,63 @@ class calc_app:
         except OverflowError:
             return eval_expr
 
-    def validate_input(self, user_input: str):
+    def check_str(self, val: str, format: str = ""):
+        if val.isdigit():
+            return True
+
+        if val == "/":
+            return True if format == "args" else False
+
+        if "/" in val:
+            left, right = val.split("/", 1)
+            if left.isdigit() and right.isdigit():
+                return True
+            return False
+
+        if "." in val:
+            left, right = val.split(".", 1)
+            if left.isdigit() and right.isdigit():
+                return True
+            return False
+
+        return False
+
+    def validate_str(self, user_input: str):
         user_input = user_input.strip()
         values = user_input.split()
-        operands = []
-        operators = []
+        operands: list[str] = []
+        operators: list[str] = []
 
         for i, val in enumerate(values):
             # checks validity of input
-            if not val.isdigit() and val not in self.SYMBOLS:
+            if not self.check_str(val) and val not in self.SYMBOLS:
                 raise ValueError(
                     f"Input: {values}\n\tError: This is an invalid input. '{val}'"
                 )
 
             # checks whether last inputted value is not a number or not
-            if not values[-1].isdigit():
+            if not self.check_str(values[-1]):
                 raise ValueError(
                     f"Input: {values}\n\tError: You cannot end with '{values[-1]}'"
                 )
 
             # checks the order of values inputted
             # By order of operand | operator | operand | operator | etc
-            if i % 2 == 0 and not val.isdigit():
+            if i % 2 == 0 and not self.check_str(val, "args"):
                 raise ValueError(
                     f"Input: {values}\n\tError: Value number {i}. {values[i]} is invalid and must follow the order of 'operand | operator | operand | operator | etc'"
                 )
-            elif i % 2 != 0 and val not in self.SYMBOLS:
+            if i % 2 != 0 and val not in self.SYMBOLS:
                 raise ValueError(
                     f"Input: {values}\n\tError: Value number {i}. {values[i]} is invalid and must follow the order of 'operand | operator | operand | operator | etc'"
                 )
 
             if i % 2 == 0:
                 operands.append(val)
-            else:
+            if i % 2 != 0:
                 operators.append(val)
 
         return operands, operators
-
-    # Addition method
-    def add(self):
-        pass
-
-    # Subtraction method
-    def sub(self):
-        pass
-
-    # Multiplication method
-    def mul(self):
-        pass
-
-    # Division method
-    def div(self):
-        pass
-
-    # Exponentiation method
-    def expo(self):
-        pass
-
-    # Modulus method
-    def mod(self):
-        pass
 
 
 if __name__ == "__main__":
