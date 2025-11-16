@@ -23,7 +23,7 @@ class calc_app:
 
         prompt = "What do you want to calculate\n:  "
 
-        user_input = input(prompt)
+        user_input = input(prompt).strip()
 
         operands, operators = self.validate_str(user_input)
 
@@ -53,25 +53,27 @@ class calc_app:
 
         print("\nSuccessful")
 
-        typewriteEffect(
-            "\n...Adding parentheses to exponentiation and division expressions", 0.01
-        )
-        time.sleep(2)
+        # typewriteEffect(
+        #     "\n...Adding parentheses to exponentiation and division expressions", 0.01
+        # )
+        # time.sleep(2)
 
-        # adds parentheses to division and exponentiation sub-expressions to resolve overflow error
-        if "**" in values:
-            idx = values.index("**")
-            values.insert(idx - 1, "(")
-            values.insert(idx + 3, ")")
+        # # adds parentheses to division and exponentiation sub-expressions to resolve overflow error
+        # # if "**" in values:
+        # #     idx = values.index("**")
+        # #     values.insert(idx - 1, "(")
+        # #     values.insert(idx + 3, ")")
 
-        if "/" in values:
-            idx = values.index("/")
-            values.insert(idx - 1, "(")
-            values.insert(idx + 3, ")")
+        # # if "/" in values:
+        # #     idx = values.index("/")
+        # #     values.insert(idx - 1, "(")
+        # #     values.insert(idx + 3, ")")
 
-        print("\nSuccessful")
-
+        # print("\nSuccessful")
+        print(expr)
+        print("\n")
         expr = " ".join(values)
+        print(expr)
 
         result = eval(expr)
 
@@ -94,6 +96,12 @@ class calc_app:
         if val.isdigit():
             return True
 
+        if val == "+":
+            return True if format == "args" else False
+        if val == "-":
+            return True if format == "args" else False
+        if val == "*":
+            return True if format == "args" else False
         if val == "/":
             return True if format == "args" else False
 
@@ -102,17 +110,48 @@ class calc_app:
             if left.isdigit() and right.isdigit():
                 return True
             return False
-
         if "." in val:
             left, right = val.split(".", 1)
             if left.isdigit() and right.isdigit():
                 return True
             return False
+        if "%" in val:
+            left, right = val.split("%", 1)
+            if left.isdigit() and right.isdigit():
+                return True
+            return False
+        if "^" in val:
+            left, right = val.split("^", 1)
+            if left.isdigit() and right.isdigit():
+                return True
+            return False
+        # for sep in (".", "*", "%", "^"):
+        #     if sep in val:
+        #         left, right = val.split(sep, 1)
+        #         if left.isdigit() and right.isdigit():
+        #             return True
+        #     return False
+
+        # # for i in (".", "*", "%", "^"):
+        # #     if separator(i) is False:
+        # #         return False
+        # #     continue
+
+        # # separator(".")
+        # # separator("*")
+        # # separator("%")
+        # # separator("^")
+
+        # if "*" in val:
+        #     left, right = val.split("*", 1)
+        #     if left.isdigit() and right.isdigit():
+        #         return True
+        #     return False
 
         return False
 
     def validate_str(self, user_input: str):
-        user_input = user_input.strip()
+        # user_input = user_input.strip()
         values = user_input.split()
         operands: list[str] = []
         operators: list[str] = []
