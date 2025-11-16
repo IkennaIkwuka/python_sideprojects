@@ -24,7 +24,6 @@ class calc_app:
         prompt = "What do you want to calculate\n:  "
 
         user_input = input(prompt).strip()
-        
 
         operands, operators = self.validate_str(user_input)
 
@@ -49,7 +48,7 @@ class calc_app:
         values = expr.split()
 
         for i in range(0, len(values), 2):
-            # adds Decimal() wrap to operands to avoid overflow error
+            # adds Decimal() wrap to operands to prevent overflow
             values[i] = f"Decimal({values[i]})"
 
         print("\nSuccessful")
@@ -79,7 +78,7 @@ class calc_app:
         for sep in standalone:
             if operator == sep:
                 return True
-            continue  # should be a continue
+            continue
         return False
 
     def check_operand(self, operand: str):
@@ -99,7 +98,7 @@ class calc_app:
                 if left.isdigit() and right.isdigit():
                     return True
                 return False
-            continue  # this should be a continue
+            continue
         return False
 
     def validate_str(self, user_input: str):
@@ -107,7 +106,6 @@ class calc_app:
         operands: list[str] = []
         operators: list[str] = []
 
-        # remove out of loop
         # checks whether last inputted value is not a number or not
         if not self.check_operand(values[-1]):
             raise ValueError(
@@ -115,13 +113,6 @@ class calc_app:
             )
 
         for i, val in enumerate(values):
-            # this and the even odd one below are doing the same thing merge them
-            # checks validity of input
-            # if not self.check_operand(val) and not self.check_operator(val):
-            #     raise ValueError(
-            #         f"Input: {values}\n\tError: This is an invalid input. '{val}'"
-            #     )
-
             # checks the order of values inputted alternating operands/operator
             # By order of operand | operator | operand | operator | etc
             if i % 2 == 0:
