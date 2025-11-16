@@ -27,15 +27,15 @@ class calc_app:
 
         operands, operators = self.validate_str(user_input)
 
-        eval_expr: str = self.eval_str(operands, operators)
+        expr: str = self.eval_str(operands, operators)
 
         try:
-            eval_result = eval(eval_expr)
-            typewriteEffect(f"\n{eval_expr} = {eval_result}", 0.05)
+            result = eval(expr)
+            typewriteEffect(f"\n{expr} = {result}", 0.05)
         except OverflowError:
-            self.fix_str(eval_expr)
+            self.fix_str(expr)
 
-    def fix_str(self, eval_expr: str):
+    def fix_str(self, expr: str):
         typewriteEffect("\nYour expression ran into an overflow error.")
         typewriteEffect("\nThis can be due to:")
         typewriteEffect("  - Huge exponent")
@@ -45,12 +45,11 @@ class calc_app:
         typewriteEffect("\n...Wrapping operands in 'Decimal()' function", 0.01)
         time.sleep(2)
 
-        eval_expr = eval_expr.strip()
+        values = expr.split()
 
-        for i, _ in enumerate(eval_expr.split()):
-            if i % 2 == 0:
-                # adds Decimal() wrap to operands to avoid overflow error
-                eval_expr = eval_expr.replace(_, f"Decimal({_})")
+        for i in range(0, len(values), 2):
+            # adds Decimal() wrap to operands to avoid overflow error
+            values[i] = f"Decimal({values[i]})"
 
         print("\nSuccessful")
 
@@ -59,42 +58,37 @@ class calc_app:
         )
         time.sleep(2)
 
-        eval_expr_split = eval_expr.split()
-
         # adds parentheses to division and exponentiation sub-expressions to resolve overflow error
-        if "**" in eval_expr_split:
-            idx = eval_expr_split.index("**")
-            eval_expr_split.insert(idx - 1, "(")
-            eval_expr_split.insert(idx + 3, ")")
+        if "**" in values:
+            idx = values.index("**")
+            values.insert(idx - 1, "(")
+            values.insert(idx + 3, ")")
 
-        if "/" in eval_expr_split:
-            idx = eval_expr_split.index("/")
-            eval_expr_split.insert(idx - 1, "(")
-            eval_expr_split.insert(idx + 3, ")")
+        if "/" in values:
+            idx = values.index("/")
+            values.insert(idx - 1, "(")
+            values.insert(idx + 3, ")")
 
         print("\nSuccessful")
 
-        eval_expr_new = ""
+        expr = " ".join(values)
 
-        for i in eval_expr_split:
-            eval_expr_new += f"{i} "
+        result = eval(expr)
 
-        eval_result = eval(eval_expr_new)
-
-        typewriteEffect(f"\n{eval_expr} = {eval_result}", 0.05)
+        typewriteEffect(f"\n{expr} = {result}", 0.05)
 
     def eval_str(self, operands: list[str], operators: list[str]):
-        eval_expr = ""
+        expr = ""
 
         for ops, opt in zip(operands, operators):
-            eval_expr += ops + " " + opt + " "
+            expr += ops + " " + opt + " "
 
-        eval_expr += f"{operands[-1]}"
+        expr += f"{operands[-1]}"
 
         # converts "^" to "**" for eval() to work with "^" in python
-        eval_expr = eval_expr.replace("^", "**")
+        expr = expr.replace("^", "**")
 
-        return eval_expr
+        return expr
 
     def check_str(self, val: str, format: str = ""):
         if val.isdigit():
@@ -124,6 +118,11 @@ class calc_app:
         operators: list[str] = []
 
         for i, val in enumerate(values):
+            # if "^" in values:
+            #     idx = values.index("^")
+            #     values[idx] = "**"
+            #     continue
+
             # checks validity of input
             if not self.check_str(val) and val not in self.SYMBOLS:
                 raise ValueError(
@@ -136,7 +135,7 @@ class calc_app:
                     f"Input: {values}\n\tError: You cannot end with '{values[-1]}'"
                 )
 
-            # checks the order of values inputted
+            # checks the order of values inputted alternating operands/operator
             # By order of operand | operator | operand | operator | etc
             if i % 2 == 0 and not self.check_str(val, "args"):
                 raise ValueError(
