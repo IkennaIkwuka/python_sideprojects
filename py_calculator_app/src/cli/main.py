@@ -24,6 +24,7 @@ class calc_app:
         prompt = "What do you want to calculate\n:  "
 
         user_input = input(prompt).strip()
+        
 
         operands, operators = self.validate_str(user_input)
 
@@ -72,40 +73,33 @@ class calc_app:
 
         return expr
 
-    def check_str(self, val: str, format: str = ""):
-        if val.isdigit():
+    def check_operator(self, operator: str):
+        standalone = {"+", "*", "-", "/"}
+
+        for sep in standalone:
+            if operator == sep:
+                return True
+            continue  # should be a continue
+        return False
+
+    def check_operand(self, operand: str):
+        if operand.isdigit():
             return True
 
-        if val == "+":
-            return True if format == "args" else False
-        if val == "-":
-            return True if format == "args" else False
-        if val == "*":
-            return True if format == "args" else False
-        if val == "/":
-            return True if format == "args" else False
+        if operand == "/":
+            return True
 
-        if "/" in val:
-            left, right = val.split("/", 1)
-            if left.isdigit() and right.isdigit():
-                return True
-            return False
-        if "." in val:
-            left, right = val.split(".", 1)
-            if left.isdigit() and right.isdigit():
-                return True
-            return False
-        if "%" in val:
-            left, right = val.split("%", 1)
-            if left.isdigit() and right.isdigit():
-                return True
-            return False
-        if "^" in val:
-            left, right = val.split("^", 1)
-            if left.isdigit() and right.isdigit():
-                return True
-            return False
+        inner_sep = {".", "%", "^", "/"}
 
+        for sep in inner_sep:
+            if sep == operand:
+                return False
+            if sep in operand:
+                left, right = operand.split(sep, 1)
+                if left.isdigit() and right.isdigit():
+                    return True
+                return False
+            continue  # this should be a continue
         return False
 
     def validate_str(self, user_input: str):
@@ -113,33 +107,34 @@ class calc_app:
         operands: list[str] = []
         operators: list[str] = []
 
-        for i, val in enumerate(values):
-            # checks validity of input
-            if not self.check_str(val) and val not in self.SYMBOLS:
-                raise ValueError(
-                    f"Input: {values}\n\tError: This is an invalid input. '{val}'"
-                )
+        # remove out of loop
+        # checks whether last inputted value is not a number or not
+        if not self.check_operand(values[-1]):
+            raise ValueError(
+                f"Input: {values}\n\tError: You cannot end with '{values[-1]}'"
+            )
 
-            # checks whether last inputted value is not a number or not
-            if not self.check_str(values[-1]):
-                raise ValueError(
-                    f"Input: {values}\n\tError: You cannot end with '{values[-1]}'"
-                )
+        for i, val in enumerate(values):
+            # this and the even odd one below are doing the same thing merge them
+            # checks validity of input
+            # if not self.check_operand(val) and not self.check_operator(val):
+            #     raise ValueError(
+            #         f"Input: {values}\n\tError: This is an invalid input. '{val}'"
+            #     )
 
             # checks the order of values inputted alternating operands/operator
             # By order of operand | operator | operand | operator | etc
-            if i % 2 == 0 and not self.check_str(val, "args"):
-                raise ValueError(
-                    f"Input: {values}\n\tError: Value number {i}. {values[i]} is invalid and must follow the order of 'operand | operator | operand | operator | etc'"
-                )
-            if i % 2 != 0 and val not in self.SYMBOLS:
-                raise ValueError(
-                    f"Input: {values}\n\tError: Value number {i}. {values[i]} is invalid and must follow the order of 'operand | operator | operand | operator | etc'"
-                )
-
             if i % 2 == 0:
+                if not self.check_operand(val):
+                    raise ValueError(
+                        f"Input: {values}\n\tError: Value number {i}. {values[i]} is invalid and must follow the order of 'operand | operator | operand | operator | etc'"
+                    )
                 operands.append(val)
-            if i % 2 != 0:
+            else:
+                if not self.check_operator(val):
+                    raise ValueError(
+                        f"Input: {values}\n\tError: Value number {i}. {values[i]} is invalid and must follow the order of 'operand | operator | operand | operator | etc'"
+                    )
                 operators.append(val)
 
         return operands, operators
