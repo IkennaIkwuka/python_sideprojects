@@ -53,27 +53,7 @@ class calc_app:
 
         print("\nSuccessful")
 
-        # typewriteEffect(
-        #     "\n...Adding parentheses to exponentiation and division expressions", 0.01
-        # )
-        # time.sleep(2)
-
-        # # adds parentheses to division and exponentiation sub-expressions to resolve overflow error
-        # # if "**" in values:
-        # #     idx = values.index("**")
-        # #     values.insert(idx - 1, "(")
-        # #     values.insert(idx + 3, ")")
-
-        # # if "/" in values:
-        # #     idx = values.index("/")
-        # #     values.insert(idx - 1, "(")
-        # #     values.insert(idx + 3, ")")
-
-        # print("\nSuccessful")
-        print(expr)
-        print("\n")
         expr = " ".join(values)
-        print(expr)
 
         result = eval(expr)
 
@@ -125,43 +105,15 @@ class calc_app:
             if left.isdigit() and right.isdigit():
                 return True
             return False
-        # for sep in (".", "*", "%", "^"):
-        #     if sep in val:
-        #         left, right = val.split(sep, 1)
-        #         if left.isdigit() and right.isdigit():
-        #             return True
-        #     return False
-
-        # # for i in (".", "*", "%", "^"):
-        # #     if separator(i) is False:
-        # #         return False
-        # #     continue
-
-        # # separator(".")
-        # # separator("*")
-        # # separator("%")
-        # # separator("^")
-
-        # if "*" in val:
-        #     left, right = val.split("*", 1)
-        #     if left.isdigit() and right.isdigit():
-        #         return True
-        #     return False
 
         return False
 
     def validate_str(self, user_input: str):
-        # user_input = user_input.strip()
         values = user_input.split()
         operands: list[str] = []
         operators: list[str] = []
 
         for i, val in enumerate(values):
-            # if "^" in values:
-            #     idx = values.index("^")
-            #     values[idx] = "**"
-            #     continue
-
             # checks validity of input
             if not self.check_str(val) and val not in self.SYMBOLS:
                 raise ValueError(
